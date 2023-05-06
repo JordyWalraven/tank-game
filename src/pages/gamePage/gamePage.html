@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Add Bootstrap CSS -->
+  <link
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="./gamePage.css">
+  <!-- Custom CSS -->
+  <style>
+
+  </style>
+</head>
+<body class="bg-dark text-white">
+    <canvas id="gameCanvas" width="2560" height="1440" style="position: absolute; width: 100%; height: 100%;"></canvas>
+    <div id="duringGameUI" style="position: absolute; width: 100%; top: 80%; height: 20%; border: 1px solid white; display: none; background-color: #1f1f1f;">
+
+    </div>
+    <div id="menu" style="position: absolute; ">
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      <div class="col-4">
+        <div class="player-list">
+          <div id="playerCount" class="player-count">Player Count: 0</div>
+          <div id="playerNames"></div>
+          <!-- Player names will be appended here dynamically -->
+        </div>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary start-game-btn" id="startGameBtn">Start Game</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Add Bootstrap and jQuery JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      require('./gamePage.js');
+    });
+
+    w
+  </script>
+</body>
+</html>

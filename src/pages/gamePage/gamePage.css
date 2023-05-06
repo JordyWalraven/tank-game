@@ -1,0 +1,36 @@
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  .player-list {
+    position: fixed;
+    left: 50px;
+    top: 50px;
+    padding: 16px;
+    background-color: #343a40;
+    height: calc(100% - 100px);
+    width: 300px;
+    overflow: auto;
+    border-radius: 12px;
+    border: 1px solid white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .player-count {
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .player-name {
+    margin-bottom: 4px;
+  }
+
+  .start-game-btn {
+    font-size: 24px;
+    padding: 20px 40px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
