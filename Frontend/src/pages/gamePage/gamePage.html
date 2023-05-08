@@ -15,6 +15,11 @@
   </style>
 </head>
 <body class="bg-dark text-white">
+  <div id="socket-loading" style="position: absolute; width: 100%; height: 100%; justify-content: center; align-items: center; display: flex;" >
+    <h1 style="margin-right: 2%;">Connecting to socket</h1> <div class="loader"></div>
+   
+</div>
+  <div id="socket-success" style="display: none; position: absolute; width: 100%; height: 100%;">
     <canvas id="gameCanvas" width="2560" height="1440" style="position: absolute; width: 100%; height: 100%;"></canvas>
     <div id="duringGameUI" style="position: absolute; width: 100%; top: 80%; height: 20%; border: 1px solid white; display: none; background-color: #1f1f1f;">
 
@@ -35,6 +40,7 @@
     </div>
   </div>
 </div>
+</div>
 
 
   <!-- Add Bootstrap and jQuery JavaScript -->
@@ -47,7 +53,7 @@
       require('./gamePage.js');
     });
 
-    w
+    
   </script>
 </body>
 </html>

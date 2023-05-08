@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-vars */
 
 const { remote } = require('electron');
@@ -10,6 +11,8 @@ let gameDrawer = null;
 function connectionSucceeded(state) {
   if (state) {
     console.log('Connection succeeded!');
+    document.getElementById('socket-success').style.display = 'block';
+    document.getElementById('socket-loading').style.display = 'none';
   } else {
     alert('Connection failed!');
     remote.getCurrentWindow().loadFile('src/pages/mainMenu/mainMenu.html');
