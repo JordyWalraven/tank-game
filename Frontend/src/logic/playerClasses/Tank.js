@@ -14,15 +14,18 @@ class Tank {
 
   syncGround(x) {
     this.xPos = x;
+    if (this.xPos > 2558) {
+      this.xPos = 2558;
+    }
 
-    this.yPos = this.groundRef.points[x].y - 50;
+    this.yPos = this.groundRef.points[this.xPos].y - 50;
   }
 
   draw() {
     this.syncGround(this.xPos += 1);
     this.ctx.beginPath();
     this.ctx.rect(this.xPos - 50, this.yPos, 100, 50);
-    this.ctx.fillStyle = 'red';
+    this.ctx.fillStyle = this.color;
     this.ctx.fill();
   }
 

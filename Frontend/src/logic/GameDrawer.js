@@ -26,7 +26,7 @@ function GameDrawer(map,players) {
 
   for (let index = 0; index < players.length; index++) {
     if (players[index] != null && players[index].id != -1) {
-      this.players.push(new Tank(players[index].id, ground, groundCanvas, players[index].x, `hsl(${Math.random() * 360}, 100%, 50%)`));
+      this.players.push(new Tank(players[index].id, ground, document.getElementById('gameCanvas'), players[index].x, `hsl(${Math.random() * 360}, 100%, 50%)`));
     }
   }
 
