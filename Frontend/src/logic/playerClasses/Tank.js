@@ -22,7 +22,6 @@ class Tank {
   }
 
   draw() {
-    this.syncGround(this.xPos += 1);
     let point1 = this.groundRef.points[this.xPos-25].y;
     let point2 = this.groundRef.points[this.xPos+25].y;
     let angle = Math.atan2(point2 - point1, 50);

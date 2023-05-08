@@ -52,9 +52,10 @@ wss.on('connection', (socket) => {
       let maparr = [];
       for (let index = 0; index < 2560; index++) {
         maparr.push({x: index, y: Math.sin(index/100) *100 + 700})
-        
       }
       broadcastMessage(JSON.stringify({type: 'startGame', map:maparr , players:[{name :"jordy", id:1, x:300},{name :"Sil", id:2, x:2000}]}))
+    } else if (message.type === "movePlayer"){
+      broadcastMessage(JSON.stringify({type: "syncPlayers", players: message.players}))
     }
   });
 

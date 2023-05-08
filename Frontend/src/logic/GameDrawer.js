@@ -18,7 +18,7 @@ groundCanvas.height = 1440;
 const groundCtx = groundCanvas.getContext('2d');
 
 
-function GameDrawer(map,players) {
+function GameDrawer(map, players) {
   const ground = new Ground(map);
   this.effects = [];
   this.stars = [];
@@ -44,7 +44,7 @@ function GameDrawer(map,players) {
   this.syncTanks = function (players) {
     for (let index = 0; index < players.length; index++) {
       const player = players[index];
-      this.players[index].syncGround(player.x);
+      this.players.find(tank => tank.id === player.id).syncGround(player.x);
     }
   };
 

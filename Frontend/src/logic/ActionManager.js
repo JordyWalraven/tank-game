@@ -44,6 +44,8 @@ class ActionManager {
       this.uiUpdater.updateBeforeGameMenu(parsedMessage);
     } else if (parsedMessage.type === 'startGame') {
       this.startGameCallback(parsedMessage.map, parsedMessage.players);
+    } else if (parsedMessage.type === "syncPlayers"){
+      this.gameDrawer.movePlayer(parsedMessage.players);
     }
   }
 
