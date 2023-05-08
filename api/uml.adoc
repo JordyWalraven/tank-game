@@ -1,0 +1,94 @@
+
+
+Down below the diffent types of messages are described. The messages are sent as JSON objects. These messages are used to send/sync data between the different clients
+
+
+menuInfo will be used to keep the menu in sync
+
+shotInfo will be received by the socket, and the socket will broadcast it to all the clients
+
+damageInfo is the total damage amount that both players have taken
+
+
+
+
+
+
+[plantuml, class-diagram, svg]
+----
+@startuml
+
+class menuInfo {
+    + String type = "menuInfo"
+    + String[] names
+    + Integer playerCount
+}
+
+class shotInfo {
+    + String type = "shotInfo"
+    + String playerId
+    + String shotName
+    + Integer angle
+    + Integer power
+    + Integer playerID
+}
+
+class playerInfo {
+    + String type = "playerInfo"
+    + Player[] playerDamage
+}
+
+class Player {
+    + Integer playerID
+    + Integer damage
+    + Integer x
+}
+
+class startGame {
+    + String type = "startGame"
+}
+
+
+playerInfo "1" *-- "*" Player
+
+@enduml
+----
+
+/canConnect
+Return 200 if client can connect to server
+
+
+Messages that will be send from the client to the server
+
+[plantuml, class-diagram, svg]
+----
+@startuml
+
+class tookDamage {
+    + String type = "tookDamage"
+    + Integer damage
+}
+
+class tookShot {
+    + String type = "tookShot"
+    + String shotName
+    + Integer angle
+    + Integer power
+}
+
+class playerMove {
+    + String type = "playerMove"
+    + Integer newX
+}
+
+class setName {
+    + String type = "setName"
+    + String name
+}
+
+class startGame {
+    + String type = "startGame"
+}
+
+@enduml
+----

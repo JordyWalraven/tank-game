@@ -1,0 +1,19 @@
+{
+    "name": "testApp",
+    "version": "1.0.0",
+    "description": "testApp",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js"
+    },
+    "author": "testApp",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "ffmpeg": "^0.0.4",
+        "fluent-ffmpeg": "^2.1.2",
+        "socket.io": "^4.6.1",
+        "ws": "^8.13.0"
+    }
+}
