@@ -1,11 +1,7 @@
 /* eslint-disable no-plusplus */
 class Ground {
-  constructor() {
-    this.points = [];
-
-    for (let i = 1; i < 512; i++) {
-      this.points.push({ x: i * 5, y: 600 });
-    }
+  constructor(points) {
+    this.points = points;
   }
 
   draw(ctx) {

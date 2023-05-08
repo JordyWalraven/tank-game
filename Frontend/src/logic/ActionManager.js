@@ -6,13 +6,14 @@ class ActionManager {
     this.websocket = null;
     this.uiUpdater = new HtmlModifier();
     this.startGameCallback = startGameCallback;
+    this.gameDrawer = null;
   }
 
 
   connectWebSocket(connectionSuccessCallback) {
-    const ipAddress = sessionStorage.getItem('ipAddress');
-    const port = sessionStorage.getItem('port');
-    const playerName = sessionStorage.getItem('playerName');
+    const ipAddress = localStorage.getItem('ipAddress');
+    const port = localStorage.getItem('port');
+    const playerName = localStorage.getItem('playerName');
     this.websocket = new WebSocket(`ws://${ipAddress}:${port}`);
 
     this.websocket.onopen = () => {
@@ -42,7 +43,7 @@ class ActionManager {
     if (parsedMessage.type === 'menuInfo') {
       this.uiUpdater.updateBeforeGameMenu(parsedMessage);
     } else if (parsedMessage.type === 'startGame') {
-      this.startGameCallback();
+      this.startGameCallback(parsedMessage.map, parsedMessage.players);
     }
   }
 
@@ -68,6 +69,11 @@ class ActionManager {
     };
     this.websocket.send(JSON.stringify(message));
   }
+
+  setGameDrawer(gameDrawer) {
+    this.gameDrawer = gameDrawer;
+  }
+
 }
 
 module.exports = ActionManager;

@@ -49,7 +49,12 @@ wss.on('connection', (socket) => {
         text: message.text,
       }));
     } else if (message.type === 'startGame') {
-      broadcastMessage(JSON.stringify({type: 'startGame'}))
+      let maparr = [];
+      for (let index = 0; index < 2560; index++) {
+        maparr.push({x: index, y: 700})
+        
+      }
+      broadcastMessage(JSON.stringify({type: 'startGame', map:maparr , players:[{name :"jordy", id:1, x:300},{name :"Sil", id:2, x:2000}]}))
     }
   });
 

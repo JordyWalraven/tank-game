@@ -10,9 +10,15 @@ document.getElementById('connectBtn').addEventListener('click', () => {
     alert('Please enter an IP address,port number and name');
     return;
   }
-  sessionStorage.setItem('ipAddress', ipAddress);
-  sessionStorage.setItem('port', port);
-  sessionStorage.setItem('playerName', playerName);
+  localStorage.setItem('ipAddress', ipAddress);
+  localStorage.setItem('port', port);
+  localStorage.setItem('playerName', playerName);
   remote.getCurrentWindow().loadFile('src/pages/gamePage/gamePage.html');
+});
+
+document.getElementById('recoverSettings').addEventListener('click', () => {
+  document.getElementById('ipAddress').value = localStorage.getItem('ipAddress');
+  document.getElementById('port').value = localStorage.getItem('port');
+  document.getElementById('playerName').value = localStorage.getItem('playerName');
 });
 

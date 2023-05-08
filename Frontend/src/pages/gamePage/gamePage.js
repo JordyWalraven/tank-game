@@ -23,12 +23,14 @@ document.getElementById('startGameBtn').addEventListener('click', () => {
   actionManager.sentStartGameMessage();
 });
 
-function startGame(isoriginal = false){
+function startGame(map, playerPos){
   const menu = document.getElementById('menu');
   menu.style.display = 'none';
   const gameUI = document.getElementById('duringGameUI');
   gameUI.style.display = 'block';
-  gameDrawer = new GameDrawer();
+  console.log(playerPos)
+  gameDrawer = new GameDrawer(map, playerPos);
+  actionManager.setGameDrawer(gameDrawer);
 }
 
 actionManager.connectWebSocket(connectionSucceeded);
