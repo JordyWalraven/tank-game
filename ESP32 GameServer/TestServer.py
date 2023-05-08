@@ -1,17 +1,17 @@
 import websocket
-
-# Connect to websocket server
-ws = websocket.WebSocket()
-ws.connect("ws://192.168.1.30")
-print("Connected to websocket server")
-
-# Ask for input and send it to the server
-message = input("Enter a message: ")
-ws.send(message)
-
-# Wait for response
+ 
+# Connect to WebSocket server
+ws = websocket.WebSocket(sslopt={"check_hostname": False})
+ws.connect("ws://192.168.1.250")
+print("Connected to WebSocket server")
+ 
+# Ask the user for some input and transmit it
+str = input("Say something: ")
+ws.send(str)
+ 
+# Wait for server to respond and print it
 result = ws.recv()
 print("Received: " + result)
-
-# Close connection
+ 
+# Gracefully close WebSocket connection
 ws.close()
