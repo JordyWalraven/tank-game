@@ -11,8 +11,8 @@ const char *password = "M3inderS";
 typedef struct
 {
   String name;
-  int id;
-  int damage;
+  int id = -1;
+  int health;
   int x;
 } Player;
 
@@ -35,6 +35,14 @@ void broadcastMenuInfo()
   serializeJson(doc, Json);
   Serial.println(Json);
   webSocket.broadcastTXT(Json);
+}
+
+void broadcastShotInfo()
+{
+}
+
+void broadcastPlayerInfo()
+{
 }
 
 // Callback function when message received
@@ -76,10 +84,55 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
     else if (jsonBuffer["type"] == "startGame")
     {
       DynamicJsonDocument doc(192);
+      // Generate map
+      JsonArray mapList = doc.createNestedArray("map");
+      for (int i = 0; i < 512; i++)
+      {
+        mapList[i] = 600;
+      }
+
+      // Generate player start positions
+      for (int i = 0; i < 4; i++)
+      {
+        players[i].x = random(100, 412);
+      }
+
+      // Reset health
+      for (int i = 0; i < 4; i++)
+      {
+        players[i].health = 200;
+      }
+
+      // Adds all players to the json
+
+      Player playerArray[4];
+      JsonArray playerList = playerDoc.to<JsonArray>();
+      for (int i = 0; i < 4; i++)
+      {
+        playerList.add(players[i]);
+      }
+
       doc["type"] = "startGame";
+
       String json;
       serializeJson(doc, json);
       webSocket.broadcastTXT(json);
+    }
+    else if (jsonBuffer["type"] == "tookDamage")
+    {
+      for (int i = 0; i < 4; i++)
+      {
+        if (players[i].id = jsonBuffer["id"])
+        {
+          players[i].health = players[i].health - jsonBuffer["damage"].as<int>();
+        }
+      }
+    }
+    else if (jsonBuffer["type"] == "tookShot")
+    {
+    }
+    else if (jsonBuffer["type"] == "playerMove")
+    {
     }
   }
 }
