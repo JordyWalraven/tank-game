@@ -6,6 +6,8 @@ const cors = require('cors');
 const http = require('http');
 const WebSocket = require('ws');
 
+let players = [];
+
 app.use(cors());
 
 app.get('/canConnect', async (req, res) => {
@@ -23,6 +25,9 @@ wss.on('connection', (socket) => {
   // Assign a default name to the socket
   socket.name = 'Anonymous';
   socket.id = playerId;
+
+  players.push({name: socket.name, id: socket.id, x: wss.clients.size == 1 ? 300 : 2000});
+
   broadcastMessage(JSON.stringify({
     type: 'menuInfo',
     names: Array.from(wss.clients).map((client) => client.name),
@@ -35,6 +40,7 @@ wss.on('connection', (socket) => {
     if (message.type === 'setName') {
       socket.name = message.name;
       console.log(`User set their name to: ${socket.name}`);
+      players.find((player) => player.id === socket.id).name = socket.name;
       broadcastMessage(JSON.stringify({
         type: 'menuInfo',
         names: Array.from(wss.clients).map((client) => client.name),
@@ -53,14 +59,16 @@ wss.on('connection', (socket) => {
       for (let index = 0; index < 2560; index++) {
         maparr.push({x: index, y: Math.sin(index/100) *100 + 700})
       }
-      broadcastMessage(JSON.stringify({type: 'startGame', map:maparr , players:[{name :"jordy", id:1, x:300},{name :"Sil", id:2, x:2000}]}))
+      broadcastMessage(JSON.stringify({type: 'startGame', map:maparr , players: players}))
     } else if (message.type === "movePlayer"){
-      broadcastMessage(JSON.stringify({type: "syncPlayers", players: message.players}))
+      message.direction === "left" ? players.find((player) => player.id === socket.id).x -= 3 : players.find((player) => player.id === socket.id).x += 3;
+      broadcastMessage(JSON.stringify({type: "syncPlayers", players: players}))
     }
   });
 
   socket.on('close', () => {
     console.log(`User ${socket.name} disconnected`);
+    players = players.filter((player) => player.id !== socket.id);
     broadcastMessage(JSON.stringify({
       type: 'menuInfo',
       names: Array.from(wss.clients).map((client) => client.name),

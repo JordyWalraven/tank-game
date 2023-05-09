@@ -1,3 +1,6 @@
+/* eslint-disable func-names */
+/* eslint-disable no-console */
+/* eslint-disable eqeqeq */
 /* eslint-disable indent */
 /* eslint-disable no-mixed-operators */
 /* eslint-disable max-len */
@@ -41,14 +44,15 @@ function GameDrawer(map, players) {
     ground.draw(groundCtx);
   };
 
-  this.syncTanks = function (players) {
-    for (let index = 0; index < players.length; index++) {
-      const player = players[index];
-      this.players.find(tank => tank.id === player.id).syncGround(player.x);
+  this.syncTanks = function (receivedPlayers) {
+    for (let index = 0; index < receivedPlayers.length; index++) {
+      const player = receivedPlayers[index];
+      this.players.find(tank => tank.id == player.id).syncGround(player.x);
     }
   };
 
   this.updateGround();
+  this.syncTanks(players);
   this.update = function () {
     fpsCounter++;
     counter = Math.floor((Date.now() / 1000));

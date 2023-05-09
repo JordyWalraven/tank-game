@@ -1,4 +1,5 @@
 const HtmlModifier = require('./HtmlModifier');
+const InputManager = require('./InputManager');
 
 /* eslint-disable class-methods-use-this */
 class ActionManager {
@@ -7,6 +8,7 @@ class ActionManager {
     this.uiUpdater = new HtmlModifier();
     this.startGameCallback = startGameCallback;
     this.gameDrawer = null;
+    this.inputManager = null;
   }
 
 
@@ -17,18 +19,15 @@ class ActionManager {
     this.websocket = new WebSocket(`ws://${ipAddress}:${port}`);
 
     this.websocket.onopen = () => {
-      console.log('WebSocket connection opened:', ipAddress, port);
       this.setName(playerName);
       connectionSuccessCallback(true);
     };
 
-    this.websocket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+    this.websocket.onerror = () => {
       connectionSuccessCallback(false);
     };
 
     this.websocket.onclose = () => {
-      console.log('WebSocket connection closed');
       connectionSuccessCallback(false);
     };
 
@@ -38,14 +37,13 @@ class ActionManager {
   }
 
   handleMessage(message) {
-    console.log('Received message:', message);
     const parsedMessage = JSON.parse(message);
     if (parsedMessage.type === 'menuInfo') {
       this.uiUpdater.updateBeforeGameMenu(parsedMessage);
     } else if (parsedMessage.type === 'startGame') {
       this.startGameCallback(parsedMessage.map, parsedMessage.players);
-    } else if (parsedMessage.type === "syncPlayers"){
-      this.gameDrawer.movePlayer(parsedMessage.players);
+    } else if (parsedMessage.type === 'syncPlayers') {
+      this.gameDrawer.syncTanks(parsedMessage.players);
     }
   }
 
@@ -72,8 +70,17 @@ class ActionManager {
     this.websocket.send(JSON.stringify(message));
   }
 
+  sendMoveMessage(direction) {
+    const message = {
+      type: 'movePlayer',
+      direction,
+    };
+    this.websocket.send(JSON.stringify(message));
+  }
+
   setGameDrawer(gameDrawer) {
     this.gameDrawer = gameDrawer;
+    this.inputManager = new InputManager(this);
   }
 
 }

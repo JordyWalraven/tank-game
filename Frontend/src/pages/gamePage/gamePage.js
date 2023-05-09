@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-unused-vars */
 
@@ -10,7 +11,6 @@ let gameDrawer = null;
 
 function connectionSucceeded(state) {
   if (state) {
-    console.log('Connection succeeded!');
     document.getElementById('socket-success').style.display = 'block';
     document.getElementById('socket-loading').style.display = 'none';
   } else {
@@ -23,13 +23,12 @@ document.getElementById('startGameBtn').addEventListener('click', () => {
   actionManager.sentStartGameMessage();
 });
 
-function startGame(map, playerPos){
+function startGame(map, players) {
   const menu = document.getElementById('menu');
   menu.style.display = 'none';
   const gameUI = document.getElementById('duringGameUI');
   gameUI.style.display = 'block';
-  console.log(playerPos)
-  gameDrawer = new GameDrawer(map, playerPos);
+  gameDrawer = new GameDrawer(map, players);
   actionManager.setGameDrawer(gameDrawer);
 }
 

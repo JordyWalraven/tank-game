@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-plusplus */
 class Tank {
-  constructor(tankId, groundRef, canvasRef, xPos, color) {
+  constructor(id, groundRef, canvasRef, xPos, color) {
     this.points = [];
     this.xPos = xPos;
-    this.tankId = tankId;
+    this.id = id;
     this.yPos = 0;
     this.groundRef = groundRef;
     this.canvasRef = canvasRef;
@@ -22,13 +22,13 @@ class Tank {
   }
 
   draw() {
-    let point1 = this.groundRef.points[this.xPos-25].y;
-    let point2 = this.groundRef.points[this.xPos+25].y;
-    let angle = Math.atan2(point2 - point1, 50);
+    const point1 = this.groundRef.points[this.xPos - 25].y;
+    const point2 = this.groundRef.points[this.xPos + 25].y;
+    const angle = Math.atan2(point2 - point1, 50);
 
     this.ctx.beginPath();
     this.ctx.save();
-    this.ctx.translate(this.xPos, this.yPos+25);
+    this.ctx.translate(this.xPos, this.yPos + 25);
     this.ctx.rotate(angle);
     this.ctx.rect(-50, -25, 100, 50);
     this.ctx.fillStyle = this.color;
