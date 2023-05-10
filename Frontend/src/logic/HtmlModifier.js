@@ -24,7 +24,7 @@ class HtmlModifier {
     }
   }
 
-    }
+}
 
 module.exports = HtmlModifier;
 

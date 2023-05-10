@@ -26,7 +26,7 @@ wss.on('connection', (socket) => {
   socket.name = 'Anonymous';
   socket.id = playerId;
 
-  players.push({name: socket.name, id: socket.id, x: wss.clients.size == 1 ? 300 : 2000});
+  players.push({name: socket.name, id: socket.id, x: wss.clients.size == 1 ? 300 : 2000, angle:0, power:0, health:200, selectedShot:"SingleShot"});
 
   broadcastMessage(JSON.stringify({
     type: 'menuInfo',
@@ -60,8 +60,26 @@ wss.on('connection', (socket) => {
         maparr.push({x: index, y: Math.sin(index/100) *100 + 700})
       }
       broadcastMessage(JSON.stringify({type: 'startGame', map:maparr , players: players}))
-    } else if (message.type === "movePlayer"){
-      message.direction === "left" ? players.find((player) => player.id === socket.id).x -= 3 : players.find((player) => player.id === socket.id).x += 3;
+    } else if (message.type === "playerInput"){
+      const foundPlayer = players.find((player) => player.id === socket.id);
+      if(message.input === "moveLeft"){
+        foundPlayer.x -= 3
+      } else if(message.input === "moveRight"){
+        foundPlayer.x += 3
+      } else if(message.input === "angleLeft"){
+        foundPlayer.angle -= 1
+      } else if(message.input === "angleRight"){
+        foundPlayer.angle += 1
+      } else if(message.input === "powerUp"){
+        if (foundPlayer.power < 100)
+        foundPlayer.power += 1
+      } else if(message.input === "powerDown"){
+        if (foundPlayer.power >0)
+        foundPlayer.power -= 1
+      } else if(message.input === "shoot"){
+        const foundPlayer = players.find((player) => player.id === socket.id);
+        broadcastMessage(JSON.stringify({type: "shootShot", shot: foundPlayer}))
+      }
       broadcastMessage(JSON.stringify({type: "syncPlayers", players: players}))
     }
   });
