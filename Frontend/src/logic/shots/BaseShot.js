@@ -8,7 +8,6 @@ class BaseShot {
   constructor(x, y, angle, power, gravity, trailAmount, shotManagerRef) {
     this.x = x;
     this.y = y;
-    console.log(angle);
     this.angle = (-angle + 90) * Math.PI / 180;
     this.power = power;
     this.speed = { x: Math.sin(this.angle) * this.power, y: Math.cos(this.angle) * this.power };

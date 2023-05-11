@@ -54,8 +54,7 @@ class ActionManager {
       this.shotManager.pushShot(parsedMessage.shot);
       // const sound = document.getElementById('tankShot');
       // sound.play();
-    } else if (parsedMessage.type === "PlayerId"){
-      console.log(parsedMessage.id);
+    } else if (parsedMessage.type === "playerId"){
       this.uiManager.playerId = parsedMessage.id;
     }
   }

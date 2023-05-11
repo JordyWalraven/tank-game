@@ -58,7 +58,11 @@ wss.on("connection", (socket) => {
           playerCount: wss.clients.size,
         })
       );
-    } else if (message.type === "chat") {
+      }else if (message.type === "syncMap") {
+        
+
+    }
+     else if (message.type === "chat") {
       console.log(`Received message from ${socket.name}: ${message.text}`);
       broadcastMessage(
         JSON.stringify({
@@ -99,7 +103,7 @@ wss.on("connection", (socket) => {
         JSON.stringify({ type: "syncPlayers", players: players })
       );
     } else if (message.type === "requestId"){
-      socket.send(JSON.stringify({type: "PlayerId", id: socket.id}))
+      socket.send(JSON.stringify({type: "playerId", id: socket.id}))
     }
   });
 

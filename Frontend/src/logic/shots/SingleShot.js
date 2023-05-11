@@ -29,7 +29,6 @@ class SingleShot extends BaseShot {
     ctx.globalAlpha = 1;
     if (this.x > 2559 || this.x < 1 || this.y > this.shotManagerRef.getGroundY(this.x)) {
       const damages = super.calculateDamage(100, 30, this.shotManagerRef.gameDrawerRef.players, 0, 0);
-      console.log(damages);
       this.shotManagerRef.actionManagerRef.sendDamageMessage(damages);
       this.shotManagerRef.gameDrawerRef.explosions.push(new NormalFireExplosion(this.x, this.y, 100, { h: 20, s: 100, l: 50 }, 100, 20, 5, 0, 500, 700));
       this.destroy = true;

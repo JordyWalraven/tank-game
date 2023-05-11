@@ -4,10 +4,7 @@ class UIManager {
   }
 
   updateUI(players) {
-    console.log(players);
-    console.log(this.playerId);
     const player = players.find((player) => player.id === this.playerId);
-    console.log(player);
     const powerBar = document.getElementById("playerPower");
     powerBar.innerHTML = `<div style="width:100%; height:${
       100 - player.power
