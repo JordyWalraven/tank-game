@@ -1,7 +1,12 @@
 /* eslint-disable no-plusplus */
 class Ground {
-  constructor(points) {
-    this.points = points;
+  constructor(receivedPoints) {
+    this.points = [];
+    for (let index = 0; index < receivedPoints.length - 1; index++) {
+      this.points.push({ x: receivedPoints[index].x, y: receivedPoints[index].y });
+      const interpolatedY = (receivedPoints[index].y + receivedPoints[index + 1].y) / 2;
+      this.points.push({ x: receivedPoints[index].x + 1, y: interpolatedY });
+    }
   }
 
   draw(ctx) {

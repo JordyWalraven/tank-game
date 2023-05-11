@@ -69,8 +69,8 @@ wss.on("connection", (socket) => {
       );
     } else if (message.type === "startGame") {
       let maparr = [];
-      for (let index = 0; index < 2560; index++) {
-        maparr.push({ x: index, y: Math.sin(index / 100) * 100 + 700 });
+      for (let index = 0; index < 1280; index++) {
+        maparr.push({ x: index*2, y: Math.sin(index / 50) * 100 + 700 });
       }
       broadcastMessage(
         JSON.stringify({ type: "startGame", map: maparr, players: players })
