@@ -18,7 +18,7 @@ typedef struct
   int x;
   int angle = 90;
   int power = 30;
-  String weapon;
+  String selectedShot = "SingleShot";
 } Player;
 
 // Globals
@@ -31,14 +31,17 @@ void putPlayerListInDoc(JsonDocument *doc)
   JsonArray playerArray = doc->createNestedArray("players");
   for (int i = 0; i < 4; i++)
   {
-    JsonObject playerObject = playerArray.createNestedObject();
-    playerObject["id"] = players[i].id;
-    playerObject["x"] = players[i].x;
-    playerObject["health"] = players[i].health;
-    playerObject["angle"] = players[i].angle;
-    playerObject["power"] = players[i].power;
-    playerObject["weapon"] = players[i].weapon;
-    Serial.printf("Player %d: %s Health: %d, X: %d, Angle: %d, Power: %d,\n", players[i].id, players[i].name.c_str(), players[i].health, players[i].x, players[i].angle, players[i].power);
+    if (players[i].id != -1)
+    {
+      JsonObject playerObject = playerArray.createNestedObject();
+      playerObject["id"] = players[i].id;
+      playerObject["x"] = players[i].x;
+      playerObject["health"] = players[i].health;
+      playerObject["angle"] = players[i].angle;
+      playerObject["power"] = players[i].power;
+      playerObject["weapon"] = players[i].selectedShot;
+      //Serial.printf("Player %d: %s Health: %d, X: %d, Angle: %d, Power: %d,\n", players[i].id, players[i].name.c_str(), players[i].health, players[i].x, players[i].angle, players[i].power);
+    }
   }
 }
 
@@ -85,8 +88,7 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
     players[id] = newPlayer;
     IPAddress ip = webSocket.remoteIP(id);
     broadcastMenuInfo();
-    Serial.printf("[%u] Connection from ", id);
-    Serial.println(ip.toString());
+    Serial.printf("[%u] Connection from %s\n", id, ip.toString());
   }
   break;
   case WStype_TEXT:
@@ -111,10 +113,10 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
 
       JsonArray mapArray = doc.createNestedArray("map");
 
-      for (int index = 0; index < 2560; index++)
+      for (int index = 0; index < 1280; index++)
       {
         JsonObject mapObject = mapArray.createNestedObject();
-        mapObject["x"] = index;
+        mapObject["x"] = index * 2.0;
         mapObject["y"] = sin(index / 100.0) * 100.0 + 700.0;
       }
 
@@ -130,7 +132,7 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
       {
         if (players[i].id == jsonBuffer["id"].as<int>())
         {
-          Serial.printf("Player %d found, Id was: %d\n", players[i].id, jsonBuffer["id"].as<int>());
+          //Serial.printf("Player %d found, Id was: %d\n", players[i].id, jsonBuffer["id"].as<int>());
           players[i].health = players[i].health - jsonBuffer["damage"].as<int>();
         }
       }
@@ -139,42 +141,57 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
       serializeJson(doc, json);
       webSocket.broadcastTXT(json);
     }
+    else if (jsonBuffer["type"] == "requestId")
+    {
+      DynamicJsonDocument doc(192);
+      doc["type"] = "playerId";
+      doc["id"] = id;
+      String json;
+      serializeJson(doc, json);
+      webSocket.sendTXT(id, json);
+    }
     else if (jsonBuffer["type"] == "playerInput")
     {
       DynamicJsonDocument doc(192);
-      if (jsonBuffer["message"] == "tookShot")
+      if (jsonBuffer["input"] == "shoot")
       {
-        doc["type"] = "tookShot";
-        doc["id"] = jsonBuffer["id"].as<int>();
+        doc["type"] = "shootShot";
+        doc["shot"]["id"] = id;
+        doc["shot"]["x"] = players[id].x;
+        doc["shot"]["health"] = players[id].health;
+        doc["shot"]["angle"] = players[id].angle;
+        doc["shot"]["power"] = players[id].power;
+        doc["shot"]["selectedShot"] = players[id].selectedShot;
         String json;
         serializeJson(doc, json);
         webSocket.broadcastTXT(json);
       }
-      else if (jsonBuffer["type"] == "moveRight")
+      else if (jsonBuffer["input"] == "moveRight")
       {
-        players[jsonBuffer["id"].as<int>()].x += 3;
+        players[id].x += 3;
       }
-      else if (jsonBuffer["type"] == "moveLeft")
+      else if (jsonBuffer["input"] == "moveLeft")
       {
-        players[jsonBuffer["id"].as<int>()].x -= 3;
+        players[id].x -= 3;
       }
-      else if (jsonBuffer["type"] == "angleRight")
+      else if (jsonBuffer["input"] == "angleRight")
       {
-        players[jsonBuffer["id"].as<int>()].angle += 3;
+        players[id].angle += 1;
       }
-      else if (jsonBuffer["type"] == "angleLeft")
+      else if (jsonBuffer["input"] == "angleLeft")
       {
-        players[jsonBuffer["id"].as<int>()].angle -= 3;
+        players[id].angle -= 1;
       }
-      else if (jsonBuffer["type"] == "powerUp")
+      else if (jsonBuffer["input"] == "powerUp")
       {
-        players[jsonBuffer["id"].as<int>()].power += 3;
+        players[id].power += 1;
       }
-      else if (jsonBuffer["type"] == "powerDown")
+      else if (jsonBuffer["input"] == "powerDown")
       {
-        players[jsonBuffer["id"].as<int>()].power -= 3;
+        players[id].power -= 1;
       }
-      DynamicJsonDocument playerSync(192);
+      DynamicJsonDocument playerSync(768);
+      playerSync["type"] = "syncPlayers";
       putPlayerListInDoc(&playerSync);
       String playerSyncjson;
       serializeJson(playerSync, playerSyncjson);
