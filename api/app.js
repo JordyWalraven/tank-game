@@ -17,6 +17,7 @@ app.get("/canConnect", async (req, res) => {
 const httpServer = http.createServer(app);
 const wss = new WebSocket.Server({ server: httpServer });
 let playerId = 0;
+let map = [];
 
 wss.on("connection", (socket) => {
   playerId += 1;
@@ -58,10 +59,20 @@ wss.on("connection", (socket) => {
           playerCount: wss.clients.size,
         })
       );
-      }else if (message.type === "syncMap") {
-        
+      }else if (message.type === "updateMap") {
+        const receivedMap = message.mapPoints;
+        for (let index = 0; index < receivedMap.length; index++) {  
+          const foundPoint = map.find(point => point.x === receivedMap[index].x);
+          if (foundPoint != null && foundPoint != undefined)
+          foundPoint.y += receivedMap[index].y; 
+        }
 
-    }
+        broadcastMessage(
+          JSON.stringify({
+            type: "syncMap",
+            map
+          }));
+      }
      else if (message.type === "chat") {
       console.log(`Received message from ${socket.name}: ${message.text}`);
       broadcastMessage(
@@ -72,12 +83,12 @@ wss.on("connection", (socket) => {
         })
       );
     } else if (message.type === "startGame") {
-      let maparr = [];
+      map = [];
       for (let index = 0; index < 1280; index++) {
-        maparr.push({ x: index*2, y: Math.sin(index / 50) * 100 + 700 });
+        map.push({ x: index*2, y: Math.sin(index / 50) * 100 + 700 });
       }
       broadcastMessage(
-        JSON.stringify({ type: "startGame", map: maparr, players: players })
+        JSON.stringify({ type: "startGame", map, players: players })
       );
     } else if (message.type === "playerInput") {
       const foundPlayer = players.find((player) => player.id === socket.id);

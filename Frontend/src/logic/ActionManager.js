@@ -54,8 +54,11 @@ class ActionManager {
       this.shotManager.pushShot(parsedMessage.shot);
       // const sound = document.getElementById('tankShot');
       // sound.play();
-    } else if (parsedMessage.type === "playerId"){
+    } else if (parsedMessage.type === 'playerId') {
       this.uiManager.playerId = parsedMessage.id;
+      this.shotManager.playerId = parsedMessage.id;
+    } else if (parsedMessage.type === 'syncMap') {
+      this.gameDrawer.syncMap(parsedMessage.map);
     }
   }
 
@@ -94,6 +97,14 @@ class ActionManager {
     const message = {
       type: 'doDamage',
       damages,
+    };
+    this.websocket.send(JSON.stringify(message));
+  }
+
+  sendMapPoints(mapPoints) {
+    const message = {
+      type: 'updateMap',
+      mapPoints,
     };
     this.websocket.send(JSON.stringify(message));
   }

@@ -1,21 +1,22 @@
+/* eslint-disable no-shadow */
 class UIManager {
   constructor() {
     this.playerId = 0;
   }
 
   updateUI(players) {
-    const player = players.find((player) => player.id === this.playerId);
-    const powerBar = document.getElementById("playerPower");
+    const player = players.find(player => player.id === this.playerId);
+    const powerBar = document.getElementById('playerPower');
     powerBar.innerHTML = `<div style="width:100%; height:${
       100 - player.power
     }%; background-color:#1f1f1f;"></div>`;
 
-    const powerLabel = document.getElementById("powerLabel");
+    const powerLabel = document.getElementById('powerLabel');
     powerLabel.innerHTML = `Power: ${player.power}`;
 
-    const angleLable = document.getElementById("angleLabel");
+    const angleLable = document.getElementById('angleLabel');
     angleLable.innerHTML = `Angle: ${Math.abs(player.angle % 360)}`;
-    const angleBar = document.getElementById("rotating-div");
+    const angleBar = document.getElementById('rotating-div');
     angleBar.style.transform = `rotate(${player.angle}deg)`;
     // const healthBar = document.getElementById('healthBar');
     // healthBar.value = player.health;

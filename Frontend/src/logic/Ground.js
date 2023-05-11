@@ -1,13 +1,29 @@
 /* eslint-disable no-plusplus */
 class Ground {
-  constructor(receivedPoints) {
+
+  syncGround(receivedPoints) {
     this.points = [];
     for (let index = 0; index < receivedPoints.length - 1; index++) {
       this.points.push({ x: receivedPoints[index].x, y: receivedPoints[index].y });
       const interpolatedY = (receivedPoints[index].y + receivedPoints[index + 1].y) / 2;
       this.points.push({ x: receivedPoints[index].x + 1, y: interpolatedY });
     }
+
+    console.log(this.points);
+
   }
+
+  returnMap() {
+    const map = [];
+    for (let index = 0; index < this.points.length; index++) {
+      if (index % 2 === 0) {
+        const point = this.points[index];
+        map.push({ x: point.x, y: point.y });
+      }
+    }
+    return map;
+  }
+
 
   draw(ctx) {
     ctx.beginPath();

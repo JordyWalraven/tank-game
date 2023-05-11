@@ -5,7 +5,7 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-mixed-operators */
 class BaseShot {
-  constructor(x, y, angle, power, gravity, trailAmount, shotManagerRef) {
+  constructor(x, y, angle, power, gravity, trailAmount, shotManagerRef, isPlayer, range, impact) {
     this.x = x;
     this.y = y;
     this.angle = (-angle + 90) * Math.PI / 180;
@@ -16,6 +16,9 @@ class BaseShot {
     this.shotManagerRef = shotManagerRef;
     this.trailAmount = trailAmount;
     this.trail = [];
+    this.isPlayer = isPlayer;
+    this.range = range;
+    this.impact = impact;
   }
 
   updatePosition(frameTime) {
@@ -28,8 +31,9 @@ class BaseShot {
     }
   }
 
-  calculateDamage(range, damage, players, damageDropoff, damageDropoffRange) {
+  calculateDamage(damage, players, damageDropoff, damageDropoffRange) {
     const damageList = [];
+    const range = this.range;
     for (let index = 0; index < players.length; index++) {
       const distanceToPlayer = Math.sqrt(Math.pow(this.x - players[index].xPos, 2) + Math.pow(this.y - players[index].yPos, 2));
       if (distanceToPlayer < range) {
@@ -45,6 +49,19 @@ class BaseShot {
     return damageList;
   }
 
+  updateMapPoints() {
+    if (this.isPlayer){
+    const ogMap = this.shotManagerRef.gameDrawerRef.getGround();
+    const updatedMapPoints = [];
+    for (let index = 0; index < ogMap.length; index++) {
+      if (ogMap[index].x > this.x - this.range && ogMap[index].x < this.x + this.range) {
+        updatedMapPoints.push({ x: ogMap[index].x, y: this.impact });
+      }
+    }
+
+    this.shotManagerRef.actionManagerRef.sendMapPoints(updatedMapPoints);
+  }
+}
 }
 
 

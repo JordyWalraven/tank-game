@@ -4,8 +4,8 @@ const NormalFireExplosion = require('../explosions/NormalFireExplosion');
 const BaseShot = require('./BaseShot');
 
 class SingleShot extends BaseShot {
-  constructor(x, y, angle, power, gravity, shotManagerRef) {
-    super(x, y - 60, angle, power, gravity, 30, shotManagerRef);
+  constructor(x, y, angle, power, gravity, shotManagerRef, isPlayer) {
+    super(x, y - 60, angle, power, gravity, 30, shotManagerRef, isPlayer, 100, 20);
   }
 
   draw(ctx, frameTime) {
@@ -27,8 +27,9 @@ class SingleShot extends BaseShot {
     ctx.closePath();
     ctx.shadowBlur = 0;
     ctx.globalAlpha = 1;
-    if (this.x > 2559 || this.x < 1 || this.y > this.shotManagerRef.getGroundY(this.x)) {
-      const damages = super.calculateDamage(100, 30, this.shotManagerRef.gameDrawerRef.players, 0, 0);
+    if (this.x > 2558 || this.x < 1 || this.y > this.shotManagerRef.getGroundY(this.x)) {
+      const damages = super.calculateDamage(30, this.shotManagerRef.gameDrawerRef.players, 0, 0);
+      super.updateMapPoints();
       this.shotManagerRef.actionManagerRef.sendDamageMessage(damages);
       this.shotManagerRef.gameDrawerRef.explosions.push(new NormalFireExplosion(this.x, this.y, 100, { h: 20, s: 100, l: 50 }, 100, 20, 5, 0, 500, 700));
       this.destroy = true;

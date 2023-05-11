@@ -22,6 +22,7 @@ const groundCtx = groundCanvas.getContext('2d');
 
 function GameDrawer(map, players) {
   const ground = new Ground(map);
+  ground.syncGround(map);
   this.shots = [];
   this.stars = [];
   this.players = [];
@@ -46,8 +47,24 @@ function GameDrawer(map, players) {
     ground.draw(groundCtx);
   };
 
+
+  this.syncMap = function (receivedMap) {
+    console.log(receivedMap);
+    ground.syncGround(receivedMap);
+    this.updateGround();
+    this.players.forEach((player) => {
+      player.syncGround(player.xPos);
+    },
+    );
+  };
+
+
   this.getGroundY = function (x) {
-    return ground.points[Math.round(x)].y;
+    return ground.points[Math.floor(x)].y;
+  };
+
+  this.getGround = function () {
+    return ground.points;
   };
 
   this.syncTanks = function (receivedPlayers) {
@@ -71,7 +88,7 @@ function GameDrawer(map, players) {
     const ctx = c.getContext('2d');
     ctx.clearRect(0, 0, c.width, c.height);
 
-    if (this.explosions.length > this.prevExplosionLength){
+    if (this.explosions.length > this.prevExplosionLength) {
       this.counter = 0;
       this.prevExplosionLength = this.explosions.length;
     }
