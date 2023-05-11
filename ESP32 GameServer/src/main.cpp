@@ -24,7 +24,26 @@ typedef struct
 // Globals
 
 Player players[4];
+int mapArray[1280];
 WebSocketsServer webSocket = WebSocketsServer(80);
+
+void syncMap()
+{
+  DynamicJsonDocument doc(ESP.getMaxAllocHeap());
+  doc["type"] = "syncMap";
+  JsonArray mapArray = doc.createNestedArray("map");
+
+  for (int index = 0; index < 1280; index++)
+  {
+    JsonObject mapObject = mapArray.createNestedObject();
+    mapObject["x"] = index * 2.0;
+    mapObject["y"] = mapArray[index];
+  }
+
+  String json;
+  serializeJson(doc, json);
+  webSocket.broadcastTXT(json);
+}
 
 void putPlayerListInDoc(JsonDocument *doc)
 {
@@ -40,7 +59,7 @@ void putPlayerListInDoc(JsonDocument *doc)
       playerObject["angle"] = players[i].angle;
       playerObject["power"] = players[i].power;
       playerObject["weapon"] = players[i].selectedShot;
-      //Serial.printf("Player %d: %s Health: %d, X: %d, Angle: %d, Power: %d,\n", players[i].id, players[i].name.c_str(), players[i].health, players[i].x, players[i].angle, players[i].power);
+      // Serial.printf("Player %d: %s Health: %d, X: %d, Angle: %d, Power: %d,\n", players[i].id, players[i].name.c_str(), players[i].health, players[i].x, players[i].angle, players[i].power);
     }
   }
 }
@@ -59,14 +78,6 @@ void broadcastMenuInfo()
   serializeJson(doc, Json);
   Serial.println(Json);
   webSocket.broadcastTXT(Json);
-}
-
-void broadcastShotInfo()
-{
-}
-
-void broadcastPlayerInfo()
-{
 }
 
 // Callback function when message received
@@ -92,7 +103,7 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
   }
   break;
   case WStype_TEXT:
-    StaticJsonDocument<192> jsonBuffer;
+    DynamicJsonDocument jsonBuffer(20000);
     DeserializationError error = deserializeJson(jsonBuffer, payload);
     if (error)
     {
@@ -111,6 +122,11 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
       doc["type"] = "startGame";
       putPlayerListInDoc(&doc);
 
+      for (int index = 0; index < 1280; index++)
+      {
+        mapArray[index] = sin(index / 100.0) * 100.0 + 700.0;
+      }
+
       JsonArray mapArray = doc.createNestedArray("map");
 
       for (int index = 0; index < 1280; index++)
@@ -124,6 +140,16 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
       serializeJson(doc, json);
       webSocket.broadcastTXT(json);
     }
+    // receives x values and how much the y changes [{x:0, y:-20}, {x:1, y:-1}, {x:2, y:-2}]
+    else if (jsonBuffer["type"] == "updateMap")
+    {
+      JsonArray mapValues = jsonBuffer["mapPoints"].as<JsonArray>();
+      for (int i = 0; i < mapValues.size(); i++)
+      {
+        mapArray[jsonBuffer["mapPoints"][i]["x"].as<int>()] = jsonBuffer["mapPoints"][i]["y"].as<int>();
+      }
+      syncMap();
+    }
 
     else if (jsonBuffer["type"] == "tookDamage")
     {
@@ -132,7 +158,7 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
       {
         if (players[i].id == jsonBuffer["id"].as<int>())
         {
-          //Serial.printf("Player %d found, Id was: %d\n", players[i].id, jsonBuffer["id"].as<int>());
+          // Serial.printf("Player %d found, Id was: %d\n", players[i].id, jsonBuffer["id"].as<int>());
           players[i].health = players[i].health - jsonBuffer["damage"].as<int>();
         }
       }
@@ -217,7 +243,7 @@ void setup()
   connectToWifi();
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
-
+  Serial.println(ESP.getMaxAllocHeap());
   webSocket.begin();
   webSocket.onEvent(onWebSocketEvent);
 }
