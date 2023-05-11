@@ -64,8 +64,6 @@ function GameDrawer(map, players) {
   this.updateGround();
   this.syncTanks(players);
   this.update = function () {
-
-    
     const frameTime = Date.now() - prevFrame;
     prevFrame = Date.now();
 

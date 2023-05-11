@@ -2,6 +2,7 @@
 const HtmlModifier = require('./HtmlModifier');
 const InputManager = require('./InputManager');
 const ShotManager = require('./ShotManager');
+const UIManager = require('./UIManager');
 
 /* eslint-disable class-methods-use-this */
 class ActionManager {
@@ -12,6 +13,7 @@ class ActionManager {
     this.gameDrawer = null;
     this.inputManager = null;
     this.shotManager = null;
+    this.uiManager = null;
   }
 
 
@@ -47,10 +49,14 @@ class ActionManager {
       this.startGameCallback(parsedMessage.map, parsedMessage.players);
     } else if (parsedMessage.type === 'syncPlayers') {
       this.gameDrawer.syncTanks(parsedMessage.players);
+      this.uiManager.updateUI(parsedMessage.players);
     } else if (parsedMessage.type === 'shootShot') {
       this.shotManager.pushShot(parsedMessage.shot);
       // const sound = document.getElementById('tankShot');
       // sound.play();
+    } else if (parsedMessage.type === "PlayerId"){
+      console.log(parsedMessage.id);
+      this.uiManager.playerId = parsedMessage.id;
     }
   }
 
@@ -93,11 +99,21 @@ class ActionManager {
     this.websocket.send(JSON.stringify(message));
   }
 
+  requestPlayerId() {
+    const message = {
+      type: 'requestId',
+    };
+    this.websocket.send(JSON.stringify(message));
+  }
+
   setGameDrawer(gameDrawer) {
     this.gameDrawer = gameDrawer;
     this.inputManager = new InputManager(this);
     this.shotManager = new ShotManager(this.gameDrawer, this);
+    this.uiManager = new UIManager();
+    this.requestPlayerId();
   }
+
 }
 
 module.exports = ActionManager;
