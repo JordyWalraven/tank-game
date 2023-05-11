@@ -7,6 +7,8 @@
 const char *ssid = "Daelenbroek";
 const char *password = "M3inderS";
 
+int playerId = 0; // keep track of the player id
+
 // Structs
 typedef struct
 {
@@ -83,41 +85,33 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
     }
     else if (jsonBuffer["type"] == "startGame")
     {
-      DynamicJsonDocument doc(192);
-      // Generate map
-      JsonArray mapList = doc.createNestedArray("map");
-      for (int i = 0; i < 512; i++)
-      {
-        mapList[i] = 600;
-      }
-
-      // Generate player start positions
-      for (int i = 0; i < 4; i++)
-      {
-        players[i].x = random(100, 412);
-      }
-
-      // Reset health
-      for (int i = 0; i < 4; i++)
-      {
-        players[i].health = 200;
-      }
-
-      // Adds all players to the json
-
-      Player playerArray[4];
-      JsonArray playerList = playerDoc.to<JsonArray>();
-      for (int i = 0; i < 4; i++)
-      {
-        playerList.add(players[i]);
-      }
-
+      Serial.println("Start game");
+      DynamicJsonDocument doc(ESP.getMaxAllocHeap());
       doc["type"] = "startGame";
+
+      // Making playerlist in Json
+      JsonArray playerArray = doc.createNestedArray("players");
+      for (int i = 0; i < 4; i++)
+      {
+        JsonObject playerObject = playerArray.createNestedObject();
+        playerObject["x"] = players[i].x;
+        playerObject["health"] = players[i].health;
+      }
+
+      JsonArray mapArray = doc.createNestedArray("map");
+
+      for (int index = 0; index < 2560; index++)
+      {
+        JsonObject mapObject = mapArray.createNestedObject();
+        mapObject["x"] = index;
+        mapObject["y"] = sin(index / 100.0) * 100.0 + 700.0;
+      }
 
       String json;
       serializeJson(doc, json);
       webSocket.broadcastTXT(json);
     }
+
     else if (jsonBuffer["type"] == "tookDamage")
     {
       for (int i = 0; i < 4; i++)
@@ -130,6 +124,7 @@ void onWebSocketEvent(uint8_t id, WStype_t type, uint8_t *payload, size_t length
     }
     else if (jsonBuffer["type"] == "tookShot")
     {
+      
     }
     else if (jsonBuffer["type"] == "playerMove")
     {
