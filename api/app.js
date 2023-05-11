@@ -93,8 +93,10 @@ wss.on("connection", (socket) => {
     } else if (message.type === "playerInput") {
       const foundPlayer = players.find((player) => player.id === socket.id);
       if (message.input === "moveLeft") {
+        if(foundPlayer.x > 25)
         foundPlayer.x -= 3;
       } else if (message.input === "moveRight") {
+        if(foundPlayer.x < 2558-25)
         foundPlayer.x += 3;
       } else if (message.input === "angleLeft") {
         foundPlayer.angle -= 1;

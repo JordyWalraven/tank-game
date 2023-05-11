@@ -49,7 +49,6 @@ function GameDrawer(map, players) {
 
 
   this.syncMap = function (receivedMap) {
-    console.log(receivedMap);
     ground.syncGround(receivedMap);
     this.updateGround();
     this.players.forEach((player) => {

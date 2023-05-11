@@ -8,9 +8,6 @@ class Ground {
       const interpolatedY = (receivedPoints[index].y + receivedPoints[index + 1].y) / 2;
       this.points.push({ x: receivedPoints[index].x + 1, y: interpolatedY });
     }
-
-    console.log(this.points);
-
   }
 
   returnMap() {

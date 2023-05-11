@@ -17,8 +17,8 @@ class Tank {
 
   syncGround(x) {
     this.xPos = x;
-    if (this.xPos > 2558 - 25) {
-      this.xPos = 2558 - 25;
+    if (this.xPos > 2557 - 25) {
+      this.xPos = 2557 - 25;
     } else if (this.xPos < 25) {
       this.xPos = 25;
     }
