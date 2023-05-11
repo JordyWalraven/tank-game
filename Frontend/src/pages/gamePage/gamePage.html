@@ -21,8 +21,26 @@
 </div>
   <div id="socket-success" style="display: none; position: absolute; width: 100%; height: 100%;">
     <canvas id="gameCanvas" width="2560" height="1440" style="position: absolute; width: 100%; height: 100%;"></canvas>
-    <div id="duringGameUI" style="position: absolute; width: 100%; top: 80%; height: 20%; border: 1px solid white; display: none; background-color: #1f1f1f;">
-
+    <div id="duringGameUI" style="position: absolute; width: 100%; top: 80%; height: 20%; border: 1px solid white; display: none; background-color: #1f1f1f; display: none; justify-content: space-evenly; flex-direction: row;">
+      
+      <div style="width: 20%; height: 100%; display: flex;">
+      <div id="playerPower" style="height: 100%; width: 50%; background: linear-gradient(red 0%,orange 25%, yellow 50% , green 100%); border: 1px solid white;" >
+        <div style="width:100%; height:100%; background-color:#1f1f1f;"></div>
+      </div>
+    <div id="powerLabel"
+      style="height: 100%; width: 50%; display: flex; align-items: center; margin-left: 1%;">
+    </div>
+    </div >
+    <div style="width: 15%; height: 100%;  display: flex; align-items: center;">
+        <div id="angleLabel" style="height: 100%; width: 35%;  margin-left: 1%; display: flex; align-items: center;">
+        </div>
+          <div style="width: 9vw; height: 9vw; border-radius: 50%; border: 2px solid white; position: relative;">
+            <div id="rotating-div"
+              style="width: 50%; height: 2%; background-color: white; position: absolute; top: 50%; left: 50%; transform: translate(0%, -50%); transform-origin: left;">
+            </div>
+          </div>
+    </div>
+      
     </div>
     <div id="menu" style="position: absolute; ">
   <div class="container-fluid h-100">
