@@ -59,21 +59,23 @@ wss.on("connection", (socket) => {
           playerCount: wss.clients.size,
         })
       );
-      }else if (message.type === "updateMap") {
-        const receivedMap = message.mapPoints;
-        for (let index = 0; index < receivedMap.length; index++) {  
-          const foundPoint = map.find(point => point.x === receivedMap[index].x);
-          if (foundPoint != null && foundPoint != undefined)
-          foundPoint.y += receivedMap[index].y; 
-        }
-
-        broadcastMessage(
-          JSON.stringify({
-            type: "syncMap",
-            map
-          }));
+    } else if (message.type === "updateMap") {
+      const receivedMap = message.mapPoints;
+      for (let index = 0; index < receivedMap.length; index++) {
+        const foundPoint = map.find(
+          (point) => point.x === receivedMap[index].x
+        );
+        if (foundPoint != null && foundPoint != undefined)
+          foundPoint.y += receivedMap[index].y;
       }
-     else if (message.type === "chat") {
+
+      broadcastMessage(
+        JSON.stringify({
+          type: "syncMap",
+          map,
+        })
+      );
+    } else if (message.type === "chat") {
       console.log(`Received message from ${socket.name}: ${message.text}`);
       broadcastMessage(
         JSON.stringify({
@@ -85,7 +87,7 @@ wss.on("connection", (socket) => {
     } else if (message.type === "startGame") {
       map = [];
       for (let index = 0; index < 1280; index++) {
-        map.push({ x: index*2, y: Math.sin(index / 50) * 100 + 700 });
+        map.push({ x: index * 2, y: Math.sin(index / 50) * 100 + 700 });
       }
       broadcastMessage(
         JSON.stringify({ type: "startGame", map, players: players })
@@ -93,11 +95,9 @@ wss.on("connection", (socket) => {
     } else if (message.type === "playerInput") {
       const foundPlayer = players.find((player) => player.id === socket.id);
       if (message.input === "moveLeft") {
-        if(foundPlayer.x > 25)
-        foundPlayer.x -= 3;
+        if (foundPlayer.x > 25) foundPlayer.x -= 3;
       } else if (message.input === "moveRight") {
-        if(foundPlayer.x < 2558-25)
-        foundPlayer.x += 3;
+        if (foundPlayer.x < 2558 - 25) foundPlayer.x += 3;
       } else if (message.input === "angleLeft") {
         foundPlayer.angle -= 1;
       } else if (message.input === "angleRight") {
@@ -115,8 +115,8 @@ wss.on("connection", (socket) => {
       broadcastMessage(
         JSON.stringify({ type: "syncPlayers", players: players })
       );
-    } else if (message.type === "requestId"){
-      socket.send(JSON.stringify({type: "playerId", id: socket.id}))
+    } else if (message.type === "requestId") {
+      socket.send(JSON.stringify({ type: "playerId", id: socket.id }));
     }
   });
 
