@@ -71,15 +71,14 @@ class BaseShot {
   }
 
   updateMapPoints() {
-    let maxDepth = null;
+    const maxDepth = null;
+    const updatedMapPoints = [];
     if (this.isPlayer) {
       const ogMap = this.shotManagerRef.gameDrawerRef.getGround();
       const yheight = this.shotManagerRef.gameDrawerRef.getGroundY(
         Math.floor(this.x)
       );
       this.y = yheight;
-      const updatedMapPoints = [];
-      let initialHeightDiff = null;
       let basePoint = null;
       for (let index = 0; index < ogMap.length; index++) {
         if (
@@ -89,30 +88,12 @@ class BaseShot {
           if (basePoint == null) {
             basePoint = ogMap[index];
           }
+
           const xDiff = ogMap[index].x - basePoint.x;
           const percentageOfRange = xDiff / (this.range * 2);
           const calculatedImpact =
             Math.sin(percentageOfRange * Math.PI) * this.impact;
-
-          const yDiff = ogMap[index].y - (this.y + calculatedImpact);
-
-          if (yDiff < 0) {
-            maxDepth = calculatedImpact;
-            console.log(maxDepth);
-            updatedMapPoints.push({
-              x: ogMap[index].x,
-              y: calculatedImpact,
-            });
-          } else if (maxDepth != null) {
-            console.log(maxDepth);
-            updatedMapPoints.push({
-              x: ogMap[index].x,
-              y: maxDepth,
-            });
-            if (maxDepth > 0) {
-              maxDepth -= 1;
-            }
-          }  
+          updatedMapPoints.push({ x: ogMap[index].x, y: calculatedImpact });
         }
       }
       console.log(updatedMapPoints);
